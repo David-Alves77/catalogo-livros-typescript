@@ -1,0 +1,103 @@
+
+import { useState, type FormEvent } from "react";
+import type { Book, BookStatus, NewBook } from "../types/Book";
+
+interface BookFormProps {
+  onBookAdded: (book: Book) => void;
+}
+
+function BookForm({ onBookAdded }: BookFormProps) {
+  const [title, setTitle] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
+  const [status, setStatus] = useState<BookStatus>("Não lido");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!title.trim() || !author.trim()) {
+      setError("Preencha o título e o autor.");
+      return;
+    }
+
+    const newBook: NewBook = {
+      title: title.trim(),
+      author: author.trim(),
+      status,
+    };
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/books`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newBook),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao cadastrar livro.");
+      }
+
+      const savedBook: Book = await response.json();
+
+      onBookAdded(savedBook);
+
+      setTitle("");
+      setAuthor("");
+      setStatus("Não lido");
+    } catch (error) {
+      setError("Não foi possível cadastrar o livro.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Cadastrar livro</h2>
+
+      <input
+        type="text"
+        placeholder="Título do livro"
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Autor do livro"
+        value={author}
+        onChange={(event) => setAuthor(event.target.value)}
+        required
+      />
+
+      <select
+        value={status}
+        onChange={(event) =>
+          setStatus(event.target.value as BookStatus)
+        }
+      >
+        <option value="Não lido">Não lido</option>
+        <option value="Lido">Lido</option>
+      </select>
+
+      <button type="submit" disabled={loading}>
+        {loading ? "Cadastrando..." : "Adicionar livro"}
+      </button>
+
+      {error && <p role="alert">{error}</p>}
+    </form>
+  );
+}
+
+export default BookForm;
