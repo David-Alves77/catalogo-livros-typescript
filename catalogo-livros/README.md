@@ -1,32 +1,48 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+# Catálogo de Livros
 
-Currently, two official plugins are available:
+Projeto desenvolvido com React, TypeScript e Vite
+para gerenciamento de um catálogo de livros.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- Listagem de livros
+- Cadastro de novos livros
+- Exclusão de livros
+- Persistência dos dados com localStorage
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologias
 
-## Expanding the Oxlint configuration
+- React
+- TypeScript
+- Vite
+- localStorage
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Como executar
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+Clone o repositório e entre na pasta do projeto.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Instale as dependências:
+
+npm install
+
+Inicie o servidor:
+
+npm run dev
+
+Abra o endereço informado pelo terminal.
+
+## Armazenamento
+
+O projeto utiliza localStorage para salvar os livros
+diretamente no navegador.
+
+Não é necessário configurar uma API externa,
+criar arquivo .env ou utilizar CrudCrud.
+
+Os livros permanecem salvos após atualizar a página.
+
+## Observações
+
+Os dados são armazenados separadamente em cada
+navegador e dispositivo.

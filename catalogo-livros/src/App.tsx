@@ -1,23 +1,51 @@
 
+import { useEffect, useState } from "react";
 import BookList from "./components/BookList";
-import "./App.css";
+import BookForm from "./components/BookForm";
+
+import {
+  getBooks,
+  addBook,
+  deleteBook,
+} from "./services/bookStorage";
+
+import type { Book, NewBook } from "./types/Book";
 
 function App() {
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    setBooks(getBooks());
+  }, []);
+
+  function handleAddBook(book: NewBook): void {
+    const newBook = addBook(book);
+
+    setBooks((previous) => [
+      ...previous,
+      newBook,
+    ]);
+  }
+
+  function handleDeleteBook(id: string): void {
+    deleteBook(id);
+
+    setBooks((previous) =>
+      previous.filter((book) => book._id !== id)
+    );
+  }
+
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>📚 Catálogo de Livros</h1>
-        <p>Gerencie seus livros favoritos</p>
-      </header>
+    <main>
+      <h1>Catálogo de Livros</h1>
 
-      <main>
-        <BookList />
-      </main>
+      <BookForm onAddBook={handleAddBook} />
 
-      <footer>
-        <p>Projeto React + TypeScript | EBAC</p>
-      </footer>
-    </div>
+      <BookList
+        books={books}
+        onDeleteBook={handleDeleteBook}
+      />
+    </main>
   );
 }
 

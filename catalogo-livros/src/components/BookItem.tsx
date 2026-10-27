@@ -8,31 +8,15 @@ interface BookItemProps {
 }
 
 function BookItem({ book, onBookDeleted }: BookItemProps) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
 
-  async function handleDelete(): Promise<void> {
+  function handleDelete(): void {
     try {
-      setLoading(true);
       setError("");
-
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/books/${book._id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Erro ao excluir livro.");
-      }
-
       onBookDeleted(book._id);
     } catch (error) {
       setError("Não foi possível excluir o livro.");
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -51,9 +35,8 @@ function BookItem({ book, onBookDeleted }: BookItemProps) {
       <button
         type="button"
         onClick={handleDelete}
-        disabled={loading}
       >
-        {loading ? "Excluindo..." : "Excluir"}
+        Excluir
       </button>
 
       {error && <p role="alert">{error}</p>}

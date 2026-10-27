@@ -1,19 +1,18 @@
 
 import { useState, type FormEvent } from "react";
-import type { Book, BookStatus, NewBook } from "../types/Book";
+import type { BookStatus, NewBook } from "../types/Book";
 
 interface BookFormProps {
-  onBookAdded: (book: Book) => void;
+  onAddBook: (book: NewBook) => void;
 }
 
-function BookForm({ onBookAdded }: BookFormProps) {
-  const [title, setTitle] = useState<string>("");
-  const [author, setAuthor] = useState<string>("");
+function BookForm({ onAddBook }: BookFormProps) {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
   const [status, setStatus] = useState<BookStatus>("Não lido");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!title.trim() || !author.trim()) {
@@ -28,27 +27,8 @@ function BookForm({ onBookAdded }: BookFormProps) {
     };
 
     try {
-      setLoading(true);
       setError("");
-
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/books`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newBook),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Erro ao cadastrar livro.");
-      }
-
-      const savedBook: Book = await response.json();
-
-      onBookAdded(savedBook);
+      onAddBook(newBook);
 
       setTitle("");
       setAuthor("");
@@ -56,8 +36,6 @@ function BookForm({ onBookAdded }: BookFormProps) {
     } catch (error) {
       setError("Não foi possível cadastrar o livro.");
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -91,9 +69,7 @@ function BookForm({ onBookAdded }: BookFormProps) {
         <option value="Lido">Lido</option>
       </select>
 
-      <button type="submit" disabled={loading}>
-        {loading ? "Cadastrando..." : "Adicionar livro"}
-      </button>
+      <button type="submit">Adicionar livro</button>
 
       {error && <p role="alert">{error}</p>}
     </form>
